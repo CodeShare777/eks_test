@@ -69,7 +69,7 @@ module "eks" {
     example = {
       desired_size = 1
 
-      instance_types = ["t2.small"]
+      instance_types = [var.ec2_instance_type]
       labels = {
         Example    = "managed_node_groups"
         GithubRepo = "terraform-aws-eks"

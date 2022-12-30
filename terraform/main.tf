@@ -36,7 +36,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 18.0"
+  version = "~> 19.0"
 
   cluster_name                    = local.name
   cluster_version                 = local.cluster_version
@@ -54,19 +54,19 @@ module "eks" {
     }
   }
 
-  cluster_encryption_config = [{
+  cluster_encryption_config = {
     provider_key_arn = aws_kms_key.eks.arn
     resources        = ["secrets"]
-  }]
+  }
 
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = module.vpc.public_subnets
 
   # You require a node group to schedule coredns which is critical for running correctly internal DNS.
   # If you want to use only fargate you must follow docs `(Optional) Update CoreDNS`
   # available under https://docs.aws.amazon.com/eks/latest/userguide/fargate-getting-started.html
   eks_managed_node_groups = {
-    example = {
+    eks_node_group = {
       desired_size = 1
 
       instance_types = [var.ec2_instance_type]
@@ -77,6 +77,7 @@ module "eks" {
       }
       tags = {
         ExtraTag = "example"
+        Name = "eks-managed-node"
       }
     }
   }

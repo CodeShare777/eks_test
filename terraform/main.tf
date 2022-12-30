@@ -24,8 +24,8 @@ provider "aws" {
 }
 
 locals {
-  name            = "eks-${replace(basename(path.cwd), "_", "-")}"
-  cluster_version = "1.25"
+  name            = "simple-eks-test"
+  cluster_version = "1.24"
 
   tags = {
     Example    = local.name
@@ -81,62 +81,8 @@ module "eks" {
     }
   }
 
-  fargate_profiles = {
-    default = {
-      name = "default"
-      selectors = [
-        {
-          namespace = "backend"
-          labels = {
-            Application = "backend"
-          }
-        },
-        {
-          namespace = "default"
-          labels = {
-            WorkerType = "fargate"
-          }
-        }
-      ]
-
-      tags = {
-        Owner = "default"
-      }
-
-      timeouts = {
-        create = "20m"
-        delete = "20m"
-      }
-    }
-
-    secondary = {
-      name = "secondary"
-      selectors = [
-        {
-          namespace = "default"
-          labels = {
-            Environment = "test"
-            GithubRepo  = "terraform-aws-eks"
-            GithubOrg   = "terraform-aws-modules"
-          }
-        }
-      ]
-
-      # Using specific subnets instead of the subnets supplied for the cluster itself
-      subnet_ids = [module.vpc.private_subnets[1]]
-
-      tags = {
-        Owner = "secondary"
-      }
-    }
-  }
-
   tags = local.tags
 }
-
-################################################################################
-# Supporting Resources
-################################################################################
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"

@@ -25,7 +25,7 @@ provider "aws" {
 
 locals {
   name            = "eks-${replace(basename(path.cwd), "_", "-")}"
-  cluster_version = "1.22"
+  cluster_version = "1.25"
 
   tags = {
     Example    = local.name

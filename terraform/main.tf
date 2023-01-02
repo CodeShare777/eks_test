@@ -2,7 +2,6 @@
 # https://github.com/terraform-aws-modules/terraform-aws-eks/tree/master/examples/fargate_profile
 terraform {
   backend "s3" {
-    bucket = "farid-test-eks"
     region = "eu-central-1"
     key    = "s3folder/infra-components-state.tfstate"
   }
